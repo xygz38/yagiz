@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kayseri Hackathon 2025!</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Temel Stiller */
+body { margin:0; font-family:'Poppins',sans-serif; line-height:1.6; transition: background 0.5s, color 0.5s; scroll-behavior: smooth; }
+a { text-decoration:none; }
+
+/* Navbar */
+nav { display:flex; justify-content:space-between; align-items:center; padding:20px 50px; background-color:#3498db; position:sticky; top:0; z-index:1000; flex-wrap:wrap; }
+nav .logo { color:white; font-size:24px; font-weight:700; }
+nav .menu { list-style:none; display:flex; gap:20px; margin:0; padding:0; flex-wrap:wrap; }
+nav .menu li a { color:white; font-weight:600; }
+nav .menu li a:hover { text-decoration:underline; }
+
+/* Hero Bölümü */
+.hero { display:flex; justify-content:space-between; align-items:center; padding:80px 50px; background-color:#f4f4f4; flex-wrap:wrap; opacity:0; transform: translateY(30px); transition: all 1s ease; }
+.hero.show { opacity:1; transform: translateY(0); }
+.hero-text { max-width:50%; }
+.hero-text h1 { font-size:48px; margin-bottom:20px; }
+.hero-text p { font-size:20px; margin-bottom:30px; }
+.hero-text button { padding:12px 24px; font-size:16px; border:none; background-color:#3498db; color:white; cursor:pointer; border-radius:8px; margin-right:10px; transition: transform 0.3s; }
+.hero-text button:hover { transform: scale(1.05); background-color:#2980b9; }
+.hero-image img { max-width:400px; width:100%; height:auto; }
+
+/* Hakkımızda */
+.about-us { display:flex; align-items:center; padding:80px 50px; gap:50px; flex-wrap:wrap; background-color:#ffffff; opacity:0; transform: translateY(30px); transition: all 1s ease; }
+.about-us.show { opacity:1; transform: translateY(0); }
+.circular-image { flex:1 1 250px; max-width:250px; height:250px; border-radius:50%; overflow:hidden; }
+.circular-image img { width:100%; height:100%; object-fit:cover; }
+.about-text { flex:2 1 400px; }
+.about-text h2 { font-size:36px; margin-bottom:20px; }
+.about-text p { font-size:18px; }
+
+/* Özellikler / Yenilikçi Çözümler */
+.features { padding:80px 50px; background-color:#f9f9f9; text-align:center; opacity:0; transform: translateY(30px); transition: all 1s ease; }
+.features.show { opacity:1; transform: translateY(0); }
+.features h2 { font-size:36px; margin-bottom:20px; }
+.features p { font-size:18px; margin-bottom:50px; max-width:800px; margin-left:auto; margin-right:auto; }
+.grid-container { display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:20px; }
+.grid-container div { background-color:white; padding:20px; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s, opacity 0.5s; opacity:0; transform: translateY(20px); }
+.grid-container div.show { opacity:1; transform: translateY(0); }
+.grid-container div:hover { transform: translateY(-10px); }
+.grid-container img { max-width:80px; height:auto; display:block; margin:0 auto 15px auto; }
+
+/* Test Bölümü */
+.quiz-section { padding:80px 50px; background-color:#ffffff; text-align:center; opacity:0; transform: translateY(30px); transition: all 1s ease; }
+.quiz-section.show { opacity:1; transform: translateY(0); }
+.quiz-section h2 { font-size:36px; margin-bottom:20px; }
+.quiz-section p { font-size:18px; margin-bottom:30px; }
+.quiz-container { max-width:800px; margin:0 auto; text-align:left; }
+.quiz-item { padding:15px; margin-bottom:15px; background-color:#f4f4f4; border-radius:12px; }
+.quiz-item label { display:block; cursor:pointer; }
+#quiz-result { font-weight:700; margin-top:20px; }
+
+/* Takım */
+.team-section { padding:80px 50px; text-align:center; background-color:white; opacity:0; transform: translateY(30px); transition: all 1s ease; }
+.team-section.show { opacity:1; transform: translateY(0); }
+.team-section h2 { font-size:36px; margin-bottom:10px; }
+.team-section h3 { font-size:20px; margin-bottom:50px; color:#555555; }
+.profile-grid { display:flex; justify-content:center; flex-wrap:wrap; gap:30px; }
+.profile { width:150px; height:150px; border-radius:50%; overflow:hidden; flex-shrink:0; transition: transform 0.3s; }
+.profile img { width:100%; height:100%; object-fit:cover; }
+.profile:hover { transform: scale(1.1); }
+
+/* FAQ */
+.faq-section { padding:80px 50px; background-color:#f4f4f4; text-align:center; opacity:0; transform: translateY(30px); transition: all 1s ease; }
+.faq-section.show { opacity:1; transform: translateY(0); }
+.faq-section h2 { font-size:36px; margin-bottom:10px; }
+.faq-section h3 { font-size:20px; margin-bottom:50px; color:#555555; }
+.faq-container { max-width:800px; margin:0 auto; text-align:left; }
+.faq-item { padding:20px; margin-bottom:20px; background-color:white; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.05); cursor:pointer; transition: transform 0.3s; }
+.faq-item h3 { font-size:18px; margin-bottom:10px; color:#3498db; }
+.faq-item p { font-size:16px; line-height:1.5; display:none; }
+.faq-item.active p { display:block; }
+.faq-item.active { transform: translateX(5px); }
+
+/* İletişim */
+.contact-section { display:flex; flex-wrap:wrap; justify-content:space-between; padding:80px 50px; gap:50px; background-color:white; opacity:0; transform: translateY(30px); transition: all 1s ease; }
+.contact-section.show { opacity:1; transform: translateY(0); }
+.contact-text { flex:1 1 400px; }
+.contact-text h2 { font-size:36px; margin-bottom:20px; }
+.contact-text p { font-size:18px; line-height:1.6; }
+.contact-map { flex:1 1 400px; min-height:300px; }
+.contact-map iframe, .contact-map img { width:100%; height:100%; border-radius:12px; border:0; }
+
+/* Footer */
+footer { background-color:#3498db; color:white; padding:40px 50px 20px; }
+footer .footer-links { display:flex; flex-wrap:wrap; justify-content:center; gap:30px; margin-bottom:20px; }
+footer .footer-links a { color:white; font-weight:600; }
+footer .footer-links a:hover { text-decoration:underline; }
+footer p { text-align:center; margin:0; font-size:14px; }
+
+/* Gece Modu */
+body.dark { background-color:#2c3e50; color:#ecf0f1; }
+body.dark nav { background-color:#1c2833; }
+body.dark .hero { background-color:#34495e; }
+body.dark .hero-text button { background-color:#e74c3c; }
+body.dark .hero-text button:hover { background-color:#c0392b; }
+body.dark .features { background-color:#34495e; }
+body.dark .grid-container div { background-color:#3b4a5a; color:#ecf0f1; }
+body.dark .team-section { background-color:#34495e; }
+body.dark .team-section h2, body.dark .team-section h3 { color:#ecf0f1; }
+body.dark .faq-section { background-color:#2c3e50; color:#ecf0f1; }
+body.dark .faq-item { background-color:#3b4a5a; color:#ecf0f1; }
+body.dark .faq-item h3 { color:#e74c3c; }
+body.dark .contact-section { background-color:#34495e; }
+body.dark footer { background-color:#1c2833; }
+
+/* Responsive */
+@media (max-width:900px){
+.hero, .about-us, .contact-section { flex-direction: column; text-align:center; }
+.hero-text, .about-text, .contact-text { max-width:100%; }
+.hero-image, .circular-image, .contact-map { margin-top:30px; }
+nav { flex-direction: column; gap:15px; }
+nav .menu { justify-content:center; }
+.grid-container { grid-template-columns:1fr; }
+.profile { width:120px; height:120px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+<a href="#" class="logo">Logo</a>
+<ul class="menu">
+<li><a href="#anasayfa">Ana Sayfa</a></li>
+<li><a href="#hakkinda">Hakkımızda</a></li>
+<li><a href="#ozellikler">Yenilikçi Çözümler</a></li>
+<li><a href="#quiz">Farkındalık Testi</a></li>
+<li><a href="#takim">Takım</a></li>
+<li><a href="#sss">SSS</a></li>
+<li><a href="#iletisim">İletişim</a></li>
+</ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="anasayfa">
+<div class="hero-text">
+<h1>Kayseri Hackathon 2025!</h1>
+<p>Geleceğin teknolojisini keşfedin. Çevre ve sürdürülebilir projelerle fark yaratın!</p>
+<button id="btnMessage">Farkındalık Mesajı Göster</button>
+<button id="toggleMode">Gece/Gündüz Modu</button>
+<button id="getLocation">Konumunu Göster</button>
+<p id="message"></p>
+<p id="location"></p>
+<p id="stats">Bugüne kadar <span id="count">0</span> kişi farkındalık kazandı!</p>
+</div>
+<div class="hero-image">
+<img src="https://cdn-icons-png.flaticon.com/512/3096/3096673.png" alt="Hackathon">
+</div>
+</section>
+
+<!-- Hakkımızda -->
+<section class="about-us" id="hakkinda">
+<div class="circular-image"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Hakkımızda"></div>
+<div class="about-text">
+<h2>Hakkımızda</h2>
+<p>Kayseri Hackathon 2025 olarak amacımız, atık tekstilleri değerlendirerek çevreye duyarlı çözümler geliştirmek. Sürdürülebilir projelerle farkındalık yaratıyoruz.</p>
+</div>
+</section>
+
+<!-- Yenilikçi Çözümler -->
+<section class="features" id="ozellikler">
+<h2>Yenilikçi Çözümlerimiz</h2>
+<p>Vizyonumuz: Sürdürülebilir ve çevre dostu bir gelecek oluşturmak.<br>Misyonumuz: Atık yönetimi ve eğitim projeleri ile toplum farkındalığını artırmak.</p>
+<div class="grid-container">
+<div><img src="https://cdn-icons-png.flaticon.com/512/2920/2920256.png" alt=""><p>Atık Tekstilleri Geri Dönüştürme</p></div>
+<div><img src="https://cdn-icons-png.flaticon.com/512/1041/1041916.png" alt=""><p>Enerji Tasarrufu Projeleri</p></div>
+<div><img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" alt=""><p>Eğitim ve Farkındalık Kampanyaları</p></div>
+<div><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt=""><p>Geri Dönüşüm Atölyeleri</p></div>
+<div><img src="https://cdn-icons-png.flaticon.com/512/3135/3135717.png" alt=""><p>Yeşil Teknoloji Çözümleri</p></div>
+<div><img src="https://cdn-icons-png.flaticon.com/512/3135/3135719.png" alt=""><p>Toplumsal Bilinçlendirme</p></div>
+</div>
+</section>
+
+<!-- Farkındalık Testi -->
+<section class="quiz-section" id="quiz">
+<h2>Farkındalık Testi</h2>
+<p>Çevre ve sürdürülebilirlik konusundaki bilginizi test edin!</p>
+<div class="quiz-container" id="quiz-container">
+<!-- 10 soruluk test JS ile eklenecek -->
+</div>
+<p id="quiz-result"></p>
+<button id="submit-quiz">Testi Gönder</button>
+</section>
+
+<!-- Takım -->
+<section class="team-section" id="takim">
+<h2>Takımımız</h2>
+<h3>Projelerimizin Arkasındaki İnsanlar</h3>
+<div class="profile-grid">
+<div class="profile"><img src="https://cdn-icons-png.flaticon.com/512/147/147142.png" alt=""></div>
+<div class="profile"><img src="https://cdn-icons-png.flaticon.com/512/147/147144.png" alt=""></div>
+<div class="profile"><img src="https://cdn-icons-png.flaticon.com/512/147/147133.png" alt=""></div>
+<div class="profile"><img src="https://cdn-icons-png.flaticon.com/512/147/147136.png" alt=""></div>
+<div class="profile"><img src="https://cdn-icons-png.flaticon.com/512/147/147128.png" alt=""></div>
+<div class="profile"><img src="https://cdn-icons-png.flaticon.com/512/147/147140.png" alt=""></div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="sss">
+<h2>SSS</h2>
+<h3>Sıkça Sorulan Sorular</h3>
+<div class="faq-container">
+<div class="faq-item"><h3>Projeye nasıl katılabilirim?</h3><p>Kayıt formunu doldurarak ve şartları kabul ederek projeye katılabilirsiniz.</p></div>
+<div class="faq-item"><h3>Geri dönüşüm hakkında bilgi alabilir miyim?</h3><p>Sitemizde atıkların nasıl geri dönüştürüldüğünü anlatan rehberler bulunmaktadır.</p></div>
+<div class="faq-item"><h3>Hackathon ücretli mi?</h3><p>Kayseri Hackathon 2025 tamamen ücretsizdir.</p></div>
+</div>
+</section>
+
+<!-- İletişim -->
+<section class="contact-section" id="iletisim">
+<div class="contact-text">
+<h2>İletişim</h2>
+<p>Adres: Kayseri, Türkiye<br>Email: info@kayserihackathon.com<br>Telefon: +90 123 456 78 90</p>
+</div>
+<div class="contact-map">
+<iframe src="https://maps.google.com/maps?q=Kayseri&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+</div>
+</section>
+
+<!-- Footer -->
+<footer>
+<div class="footer-links">
+<a href="#anasayfa">Ana Sayfa</a>
+<a href="#hakkinda">Hakkımızda</a>
+<a href="#ozellikler">Yenilikçi Çözümler</a>
+<a href="#quiz">Farkındalık Testi</a>
+<a href="#takim">Takım</a>
+<a href="#sss">SSS</a>
+<a href="#iletisim">İletişim</a>
+</div>
+<p>&copy; 2025 Kayseri Hackathon. Tüm hakları saklıdır.</p>
+</footer>
+
+<script>
+// Farkındalık Mesajı
+let count = 0;
+const messages = [
+"Her 1 kg tekstil atığı doğayı kirletir. Geri dönüştür!",
+"Elektrik tasarrufu ile doğayı koruyabilirsin!",
+"Toplumda farkındalık yaratmak senin elinde!"
+];
+document.getElementById("btnMessage").addEventListener("click",()=>{
+let msg = messages[Math.floor(Math.random()*messages.length)];
+document.getElementById("message").textContent = msg;
+count++; document.getElementById("count").textContent = count;
+});
+
+// Gece/Gündüz Modu
+document.getElementById("toggleMode").addEventListener("click", ()=>{
+document.body.classList.toggle("dark");
+});
+
+// Konum
+document.getElementById("getLocation").addEventListener("click", ()=>{
+if(navigator.geolocation){navigator.geolocation.getCurrentPosition(position=>{
+document.getElementById("location").textContent=`Enlem: ${position.coords.latitude}, Boylam: ${position.coords.longitude}`;});}
+else{alert("Geolocation desteklenmiyor");}
+});
+
+// FAQ Açılır
+document.querySelectorAll(".faq-item").forEach(item=>{
+item.addEventListener("click", ()=>{item.classList.toggle("active");});
+});
+
+// Scroll Animasyonları
+function reveal(){document.querySelectorAll(".hero, .about-us, .features, .team-section, .faq-section, .contact-section, .quiz-section").forEach(el=>{
+const top=el.getBoundingClientRect().top; if(window.innerHeight>top+100){el.classList.add("show");}});
+}
+window.addEventListener("scroll",reveal);
+window.addEventListener("load",reveal);
+
+// Farkındalık Testi
+const quizData = [
+{question:"Geri dönüşüm neden önemlidir?", options:["Doğayı korur","Para kazanmak için","Hiç önemi yok","Zaman kaybı"], answer:0},
+{question:"Elektrik tasarrufu çevreyi nasıl etkiler?", options:["Pozitif","Negatif","Hiç etkisi yok","Zarar verir"], answer:0},
+{question:"Atık tekstil atıklarının çoğu nereye gider?", options:["Toprağa","Denize","Çöpe","Hepsi"], answer:3},
+{question:"Sürdürülebilir enerji kaynakları nelerdir?", options:["Güneş ve rüzgar","Kömür ve petrol","Doğalgaz","Hiçbiri"], answer:0},
+{question:"Farkındalık kampanyaları ne amaçlar?", options:["Toplumu bilinçlendirmek","Sadece reklam","Para kazanmak","Hiçbir şey"], answer:0},
+{question:"Geri dönüşüm hangi materyallerle başlar?", options:["Kağıt, plastik, tekstil","Yemek","Metal","Hiçbiri"], answer:0},
+{question:"Atıkların azaltılması neden önemli?", options:["Doğa için","Zaman kaybı","Hiçbir etkisi yok","Sadece ekonomi"], answer:0},
+{question:"Yeşil teknoloji çözümleri nelerdir?", options:["Enerji tasarruflu cihazlar","Klasik cihazlar","Hiçbiri","Hepsi"], answer:0},
+{question:"Sürdürülebilirlik nedir?", options:["Gelecek için kaynakları korumak","Zengin olmak","Sadece geri dönüşüm","Hiçbir şey"], answer:0},
+{question:"Toplumsal bilinçlendirme neden önemlidir?", options:["Herkesi bilinçlendirmek","Hiç önemi yok","Zaman kaybı","Para kazanmak"], answer:0}
+];
+
+const quizContainer = document.getElementById("quiz-container");
+quizData.forEach((q,i)=>{
+let div = document.createElement("div"); div.classList.add("quiz-item");
+div.innerHTML = `<strong>${i+1}. ${q.question}</strong><br>${q.options.map((opt,index)=>`<label><input type="radio" name="q${i}" value="${index}"> ${opt}</label>`).join('')}`;
+quizContainer.appendChild(div);
+});
+
+document.getElementById("submit-quiz").addEventListener("click", ()=>{
+let score = 0;
+quizData.forEach((q,i)=>{
+const selected = document.querySelector(`input[name="q${i}"]:checked`);
+if(selected && parseInt(selected.value)===q.answer){score++;}});
+document.getElementById("quiz-result").textContent=`Doğru cevap sayınız: ${score} / ${quizData.length}`;
+});
+</script>
+
+</body>
+</html>
+<!-- Kullanıcı Yorumları -->
+<section class="testimonials" id="yorumlar">
+  <h2>Kullanıcı Yorumları</h2>
+  <div class="testimonials-grid" style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; margin-top:30px;">
+    <div style="background:#f4f4f4; padding:15px; border-radius:12px; width:220px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+      <p>"Projeyi çok beğendim, gerçekten farkındalık yaratıyor!"</p>
+      <span style="font-weight:600; color:#3498db;">Mehmet</span>
+    </div>
+    <div style="background:#f4f4f4; padding:15px; border-radius:12px; width:220px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+      <p>"Hackathon harika bir deneyimdi, arkadaşlarımı da getirdim."</p>
+      <span style="font-weight:600; color:#3498db;">Ayşe</span>
+    </div>
+    <div style="background:#f4f4f4; padding:15px; border-radius:12px; width:220px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+      <p>"Bu projeye katılmak motivasyonumu artırdı, destekliyorum."</p>
+      <span style="font-weight:600; color:#3498db;">Ali</span>
+    </div>
+    <div style="background:#f4f4f4; padding:15px; border-radius:12px; width:220px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+      <p>"Çevre bilincini artıran çok faydalı bir platform."</p>
+      <span style="font-weight:600; color:#3498db;">Elif</span>
+    </div>
+    <div style="background:#f4f4f4; padding:15px; border-radius:12px; width:220px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+      <p>"Projeleri ilham verici, kesinlikle öneriyorum!"</p>
+      <span style="font-weight:600; color:#3498db;">Deniz</span>
+    </div>
+    <div style="background:#f4f4f4; padding:15px; border-radius:12px; width:220px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+      <p>"Toplumda farkındalık oluşturmak için mükemmel bir girişim."</p>
+      <span style="font-weight:600; color:#3498db;">Fatma</span>
+    </div>
+    <div style="background:#f4f4f4; padding:15px; border-radius:12px; width:220px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+      <p>"Teknoloji ve çevre bilincini birleştiren süper bir proje."</p>
+      <span style="font-weight:600; color:#3498db;">Hakan</span>
+    </div>
+    <div style="background:#f4f4f4; padding:15px; border-radius:12px; width:220px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+      <p>"Katılım sağlamak çok keyifliydi, herkese tavsiye ederim."</p>
+      <span style="font-weight:600; color:#3498db;">Zeynep</span>
+    </div>
+  </div>
+</section>
+s<!-- Etkileşimli İstatistikler & Fikir Gönderme -->
+<section class="interactive-section" id="interactive">
+  <h2>Projeye Katkı ve İstatistikler</h2>
+  <p>Kayseri Hackathon 2025 ile fark yaratan istatistikler ve sizin fikirleriniz</p>
+
+  <div class="stats-container">
+    <div class="stat">
+      <h3 id="stat1">0</h3>
+      <p>Farkındalık Kazanan Kişi</p>
+    </div>
+    <div class="stat">
+      <h3 id="stat2">0</h3>
+      <p>Geri Dönüşüm Projesi</p>
+    </div>
+    <div class="stat">
+      <h3 id="stat3">0</h3>
+      <p>Eğitim Kampanyası</p>
+    </div>
+  </div>
+
+  <div class="idea-form">
+    <h3>Fikir Gönder</h3>
+    <p>Projeye destek olmak için önerinizi bırakın, biz değerlendireceğiz!</p>
+    <textarea id="ideaInput" placeholder="Fikrini buraya yaz..."></textarea>
+    <button id="submitIdea">Gönder</button>
+    <p id="ideaMessage"></p>
+  </div>
+</section>
+
+<style>
+/* Interactive Bölüm */
+.interactive-section { padding:80px 50px; background-color:#f0f8ff; text-align:center; border-radius:12px; margin:50px 0; }
+.interactive-section h2 { font-size:36px; margin-bottom:20px; }
+.interactive-section p { font-size:18px; margin-bottom:40px; color:#555; }
+.stats-container { display:flex; justify-content:center; gap:50px; flex-wrap:wrap; margin-bottom:50px; }
+.stat h3 { font-size:48px; color:#3498db; margin-bottom:10px; transition: all 1s ease; }
+.stat p { font-size:18px; }
+
+.idea-form { max-width:600px; margin:0 auto; text-align:left; }
+.idea-form h3 { font-size:28px; margin-bottom:15px; }
+.idea-form p { margin-bottom:15px; }
+.idea-form textarea { width:100%; padding:15px; border-radius:8px; border:1px solid #ccc; margin-bottom:15px; resize:none; font-family:'Poppins',sans-serif; font-size:16px; }
+.idea-form button { padding:12px 24px; background-color:#3498db; color:white; border:none; border-radius:8px; cursor:pointer; transition:0.3s; }
+.idea-form button:hover { background-color:#2980b9; }
+#ideaMessage { margin-top:10px; font-weight:600; color:green; text-align:center; }
+</style>
+
+<script>
+// Animasyonlu sayılar
+function animateStat(id, target) {
+  let count = 0;
+  const speed = Math.ceil(target / 100);
+  const el = document.getElementById(id);
+  const interval = setInterval(()=>{
+    count += speed;
+    if(count >= target){count=target; clearInterval(interval);}
+    el.textContent = count;
+  }, 20);
+}
+
+window.addEventListener("load", ()=>{
+  animateStat("stat1", 542);
+  animateStat("stat2", 128);
+  animateStat("stat3", 76);
+});
+
+// Fikir Gönderme
+document.getElementById("submitIdea").addEventListener("click", ()=>{
+  const input = document.getElementById("ideaInput");
+  if(input.value.trim() === ""){
+    document.getElementById("ideaMessage").textContent = "Lütfen bir fikir yazın.";
+    return;
+  }
+  document.getElementById("ideaMessage").textContent = "Teşekkürler! Fikriniz kaydedildi.";
+  input.value = "";
+});
+</script>
+<!-- ... diğer bölümler ... -->
+
+<!-- Farkındalık Testi -->
+<section class="quiz-section" id="quiz">
+  <!-- quiz içeriği -->
+</section>
+
+<!-- Takım -->
+<section class="team-section" id="takim">
+  <!-- takım içeriği -->
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="sss">
+  
